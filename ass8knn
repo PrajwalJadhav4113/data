@@ -1,0 +1,90 @@
+#1
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+
+# Dataset
+data = {
+    'BMI': [33.6, 26.6, 23.4, 43.1, 35.3, 35.9, 36.7, 25.7, 23.3, 31.0],
+    'Age': [50, 30, 40, 67, 23, 67, 45, 46, 29, 56],
+    'Sugar': [1, 0, 0, 0, 1, 1, 1, 0, 0, 1]
+}
+df = pd.DataFrame(data)
+
+# Features and target
+X = df[['BMI', 'Age']]
+y = df['Sugar']
+
+# k-NN model
+model = KNeighborsClassifier(n_neighbors=3)
+model.fit(X, y)
+
+# New patient data
+new_patient = [[34, 40]]
+prediction = model.predict(new_patient)
+
+print("Predicted Sugar Level for patient (BMI=34, Age=40):",
+      "Yes (1)" if prediction[0] == 1 else "No (0)")
+
+##################################################### Optional: Check neighbors
+# distances, indices = model.kneighbors(new_patient)
+# print("\nNearest Neighbors (indices):", indices)
+# print("Distances:", distances)
+
+#2
+# Simple k-NN example (Brightness & Saturation)
+
+from sklearn.neighbors import KNeighborsClassifier
+
+# Data
+X = [[40,20],[50,50],[60,90],[10,25],[70,70],[60,10],[25,80]]
+y = ['Red','Blue','Blue','Red','Blue','Red','Blue']
+
+# Model
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X, y)
+
+# Predict new value
+pred = knn.predict([[20,35]])
+
+print("Predicted Class:", pred[0])
+
+
+#3
+# Simple k-NN on Iris dataset
+
+from sklearn.datasets import load_iris
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+
+# Load data
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Split data
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.3)
+
+# Model
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(Xtr, ytr)
+
+# Predict & Accuracy
+print("Accuracy:", knn.score(Xte, yte))
+
+#4
+from sklearn.datasets import load_iris
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+
+iris=load_iris()
+x,y=iris.data,iris.target
+
+xtr,xte,ytr,yte=train_test_split(x,y,test_size=0.3)
+
+model=KNeighborsClassifier(n_neighbors=3)
+model.fit(xtr,ytr)
+
+print("Accuracy" , model.score(xte,yte))
+
+
+
+
