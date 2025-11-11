@@ -1,0 +1,76 @@
+# Sample dataset
+data = [
+    ['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same', 'Yes'],
+    ['Sunny', 'Warm', 'High', 'Strong', 'Warm', 'Same', 'Yes'],
+    ['Rainy', 'Cold', 'High', 'Strong', 'Warm', 'Change', 'No'],
+    ['Sunny', 'Warm', 'High', 'Strong', 'Cool', 'Change', 'Yes']
+]
+
+# Find-S algorithm
+def find_s(data):
+    n_attributes = len(data[0]) - 1
+    # Initialize h to the most specific hypothesis
+    h = ['0'] * n_attributes
+
+    for example in data:
+        if example[-1] == 'Yes':  # Positive example
+            for i in range(n_attributes):
+                if h[i] == '0':  # First positive example
+                    h[i] = example[i]
+                elif h[i] != example[i]:
+                    h[i] = '?'  # Generalize attribute
+
+    return h
+
+# Run Find-S
+hypothesis = find_s(data)
+print("Most specific hypothesis:", hypothesis)
+
+#2
+def candidate_elimination(data):
+    n_attributes = len(data[0]) - 1
+
+    # Initialize S (most specific) and G (most general)
+    S = [['0'] * n_attributes]
+    G = [['?'] * n_attributes]
+
+    for example in data:
+        x = example[:-1]  # attributes
+        label = example[-1]
+
+        if label == 'Yes':
+            # Update S: generalize to match positive example
+            for i in range(len(S)):
+                for j in range(n_attributes):
+                    if S[i][j] == '0':
+                        S[i][j] = x[j]
+                    elif S[i][j] != x[j]:
+                        S[i][j] = '?'
+
+            # Remove any hypotheses in G inconsistent with example
+            G = [g for g in G if all(g[i] == '?' or g[i] == x[i] for i in range(n_attributes))]
+
+        else:  # Negative example
+            # Remove inconsistent S hypotheses
+            S = [s for s in S if not all(s[i] == '?' or s[i] == x[i] for i in range(n_attributes))]
+
+            # Specialize G to exclude negative example
+            new_G = []
+            for g in G:
+                for i in range(n_attributes):
+                    if g[i] == '?':
+                        if x[i] != '?':
+                            new_hypothesis = g.copy()
+                            new_hypothesis[i] = '!' + x[i]  # !x[i] = not this value
+                            new_G.append(new_hypothesis)
+                    elif g[i] != x[i]:
+                        new_G.append(g)
+            G = new_G
+
+    return S, G
+
+# Run Candidate Elimination
+S_final, G_final = candidate_elimination(data)
+print("Final S (Most Specific Hypotheses):", S_final)
+print("Final G (Most General Hypotheses):", G_final)
+
