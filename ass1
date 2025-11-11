@@ -1,0 +1,91 @@
+import math
+print(math.floor(3.7))
+print(math.floor(-2.3))
+
+print(math.ceil(3.2))   # Output: 4
+print(math.ceil(-2.7))  # Output: -2
+
+print(math.sqrt(25))  # Output: 5.0
+print(math.sqrt(2))   # Output: 1.4142135623730951
+
+print(math.isqrt(25))  # Output: 5
+print(math.isqrt(26))  # Output: 5
+print(math.isqrt(0))   # Output: 0
+
+print(math.gcd(48, 18))  # Output: 6
+print(math.gcd(17, 5))   # Output: 1
+
+print (math.gcd(48,18))
+
+
+import numpy as np
+arr= np.array([[1,2,2],
+             [4,5,6]])
+print(arr)
+print(arr.ndim);
+print(arr.shape);
+print(arr.size);
+print(arr.size);
+print(arr.sum());
+print(arr.mean());
+print(np.sort(arr));
+print(np.sin(arr))
+
+import numpy as np
+arr=np.array([[1,2,3],[4,8,6]])
+print(arr)
+print(np.sort(arr))
+print(np.sin(arr))
+
+import numpy as np
+matrix=np.array([[1,2],[4,5]])
+determinant=np.linalg.det(matrix)
+print(determinant)
+eigenvaluse,eigenvector=np.linalg.eig(matrix)
+print(eigenvaluse)
+print(eigenvector)
+
+
+
+import numpy as np
+my_list=[1,2,3,4,5,6,7,8,9,10,11,12]
+#convert to np_array 1d
+np_array=np.array(my_list)
+print(np_array)
+print("shape",np_array.shape)
+#convert to 2d
+twoD=np_array.reshape(4,3)
+print(twoD)
+print(twoD.shape)
+#convert to 3d
+treeD=np_array.reshape(2,2,3)
+print(treeD)
+print(treeD.shape)
+
+import numpy as np
+
+# Random numbers
+rng = np.random.default_rng(42)
+print("Uniform floats:\n", rng.random((2,3)))
+print("Random ints:\n", rng.integers(1,11,(3,3)))
+print("Normal values:\n", rng.normal(0,1,(2,2)))
+# Matrices
+A = np.array([[1,2,3],[4,5,6],[7,8,9]])
+B = np.array([[9,8,7],[6,5,4],[3,2,1]])
+print("Product:\n", A @ B)      # matrix multiplication
+print("Transpose:\n", A.T)      # transpose
+print("Sum:\n", A + B)          # element-wise addition
+
+import numpy as np 
+from scipy import linalg
+matrix=np.array([[1,2],[4,5]])
+determinant=linalg.det(matrix)
+print(determinant)
+
+import numpy as np
+
+matrix=np.array([[1,2],[3,4]])
+eigenvalue,eigenvector=linalg.eig(matrix)
+print(eigenvalue)
+print(eigenvector)
+
