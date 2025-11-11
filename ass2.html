@@ -1,0 +1,66 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+# Create a Series using pandas and display 
+numbers=[20,54,254,5,4,54,54]
+
+series=pd.Series(numbers)
+print(series)
+
+#Access the index and the values of our Series
+print(series.index)
+print(series.values)
+
+# Compare an array using Numpy with a series using pandas 
+arr=np.array([20,54,254,5,4,58,54])
+compare=(series==arr)
+print(compare)
+
+#Define Series objects with individual indices
+series2= pd.Series([10,20,30,40],index=['A','N','C','D'])
+print(series2)
+
+#Access single value of a series 
+access=series2['A']
+access2=series2.iloc[0]
+print("Access by index",access)
+print("Access by position",access2)
+
+#Load datasets in a Data frame variable using pandas 
+data={
+    'Name':['Prajwal','Omkar','Ganesh','Shubham'],
+    'Age':[22,16,4,84,],
+    'class':[10,11,12,14]
+}
+df=pd.DataFrame(data)
+print(df)
+
+#Usage of different methods in Matplotlib. 
+x=[1,2,3,4,5,6]
+y=[12,20,31,42,51,84]
+plt.plot(x,y,label="Line plot",marker='o')
+plt.title("Line plot example")
+plt.xlabel("X-Axis")
+plt.ylabel("Y-Axis")
+plt.legend()
+plt.show()
+
+#use bar
+plt.bar(x,y,color='red')
+plt.title("Bar Plot")
+plt.xlabel("X-Axis")
+plt.ylabel("Y-Axis")
+plt.show()
+
+#use scatter
+plt.scatter(x,y,color='orange')
+plt.title("Scatter Plot")
+plt.xlabel("X-Axis")
+plt.ylabel("Y-Axis")
+plt.show()
+
+#use pie
+labels=['A','B','C','D','E','F']
+plt.pie(y,labels=labels , autopct='%1.1f%%')
+plt.title("Pie plot")
+plt.show()
