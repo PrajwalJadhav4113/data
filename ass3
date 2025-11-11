@@ -1,0 +1,140 @@
+#frm dictionary method
+import pandas as pd
+data = {'Name': ['Alice', 'Bob', 'Charlie'],
+        'Age': [25, 30, 22],
+        'City': ['New York', 'London', 'Paris']}
+df = pd.DataFrame(data)
+print(df)
+
+#from list of lists
+import pandas as pd
+data = [['Alice', 25, 'New York'],
+        ['Bob', 30, 'London'],
+        ['Charlie', 22, 'Paris']]
+df = pd.DataFrame(data, columns=['Name', 'Age', 'City'])
+print(df)
+
+#from list of dictionaries
+import pandas as pd
+data = [
+    {'Name': 'Alice', 'Age': 25, 'City': 'New York'},
+    {'Name': 'Bob', 'Age': 30, 'City': 'London'},
+    {'Name': 'Charlie', 'Age': 22, 'City': 'Paris'}
+]
+df = pd.DataFrame(data)
+print(df)
+
+#from numpy array files
+import pandas as pd
+import numpy as np
+data = np.array([[1, 2, 3],
+                 [4, 5, 6],
+                 [7, 8, 9]])
+df_np = pd.DataFrame(data, columns=['ColA', 'ColB', 'ColC'])
+print(df_np)
+
+#from external file
+import pandas as pd
+# From a CSV file
+df_csv = pd.read_csv(r'C:\Users\prajw\Downloads\data.csv')
+print(df_csv.head())
+
+# From an Excel file
+df_excel = pd.read_excel(r'C:\Users\prajw\Downloads\data.xlsx')
+print(df_excel.head())
+
+# its 2 que
+from google.colab import drive
+import pandas as pd
+# Mount Google Drive
+drive.mount('/content/drive')
+# Read the CSV file
+df = pd.read_csv('/content/drive/MyDrive/ExamData/marks.csv')
+# Show data
+print(df.head())
+
+#3
+from sklearn.datasets import load_iris, load_digits, load_diabetes
+
+# Load the Iris dataset
+iris = load_iris()
+X_iris, y_iris = iris.data, iris.target
+print(X_iris)
+
+# Load the Digits dataset
+digits = load_digits()
+X_digits, y_digits = digits.data, digits.target
+
+# Load the Diabetes dataset
+diabetes = load_diabetes()
+X_diabetes, y_diabetes = diabetes.data, diabetes.target
+
+#4
+# Import libraries
+import pandas as pd
+from sklearn.datasets import load_iris
+from scipy import stats  # For mode
+
+# Load Iris dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Create a DataFrame                                           # Load the CSV file
+                                                           #df = pd.read_csv("C:/Users/prajw/Downloads/data.csv")  # <-- change path if needed
+df = pd.DataFrame(X, columns=iris.feature_names)
+# 1. Mean
+print("Mean of each feature:")
+print(df.mean())
+# 2. Median
+print("\nMedian of each feature:")
+print(df.median())
+# 3. Mode
+print("\nMode of each feature:")
+print(df.mode().iloc[0])  # Take the first mode if multiple
+# 4. Variance
+print("\nVariance of each feature:")
+print(df.var())
+# 5. Standard Deviation
+print("\nStandard Deviation of each feature:")
+print(df.std())
+
+
+
+#5
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+# Load CSV
+df = pd.read_csv(r"C:\Users\prajw\Downloads\sample_data.csv")
+print("Original Data:\n", df)
+
+#  Reshape (pivot table)
+pivot = df.pivot_table(values='Salary', index='Department', aggfunc='mean')
+print("\nPivot Table:\n", pivot)
+
+#  Filter (Age > 30)
+filtered = df[df['Age'] > 30]
+print("\nFiltered Data:\n", filtered)
+
+#  Merge (add bonus column)
+bonus = pd.DataFrame({
+    'ID': [1,2,3,4,5,6,7,8],
+    'Bonus': [5000,6000,4000,4500,7000,6500,5800,5200]
+})
+merged = pd.merge(df, bonus, on='ID')
+print("\nMerged Data:\n", merged)
+
+#  Handle missing numeric values only
+numeric_cols = ['Age', 'Salary', 'Experience']
+df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
+print("\nAfter Filling Missing Values:\n", df)
+
+#  Feature Normalization
+# Min-Max scaling
+df[numeric_cols] = MinMaxScaler().fit_transform(df[numeric_cols])
+print("\nAfter Min-Max Normalization:\n", df)
+
+# Standard (Z-score) scaling
+df[numeric_cols] = StandardScaler().fit_transform(df[numeric_cols])
+print("\nAfter Standard Normalization:\n", df)
+
