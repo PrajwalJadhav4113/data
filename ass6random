@@ -1,0 +1,167 @@
+#1
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, RobustScaler
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Load data
+df = pd.read_csv(r'C:\Users\prajw\Downloads\archive\adult.csv')
+
+# (a) Segregate categorical vs numerical
+categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+numerical_cols = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+target_col = 'income'
+
+# (a) Check for missing values; frequency count of categorical variables
+print("Missing by column:\n", df.isna().sum())
+for col in categorical_cols:
+    print(col, "value counts:\n", df[col].value_counts(dropna=False))
+
+# (b) Replace '?' with NaN in specific columns
+for col in ['workclass', 'occupation', 'native.country']:
+    df[col] = df[col].replace('?', np.nan)
+
+# (c) Check labels and freq distribution again
+for col in ['workclass', 'occupation', 'native.country']:
+    print(col, "value counts:\n", df[col].value_counts(dropna=False))
+
+# (d) Impute missing values with the most frequent value (mode)
+for col in categorical_cols:
+    if df[col].isna().sum() > 0:
+        mode_val = df[col].mode()[0]
+        print(f"Imputing {col} missing values with {mode_val}")
+        df[col].fillna(mode_val, inplace=True)
+
+# (e) Explore numerical variables
+print("Numerical cols null count:\n", df[numerical_cols].isna().sum())
+print("Numerical cols summary:\n", df[numerical_cols].describe())
+
+# (f) Declare features X and target y
+X = df.drop(target_col, axis=1)
+y = df[target_col]
+
+# (g) Split dataset
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# (h) One-hot encode categorical features
+cols_to_encode = [
+    'workclass',
+    'education',
+    'marital.status',
+    'occupation',
+    'relationship',
+    'race',
+    'sex',
+    'native.country'
+]
+
+encoder = OneHotEncoder(sparse_output=False, drop='first')
+X_train_enc = pd.DataFrame(
+    encoder.fit_transform(X_train[cols_to_encode]),
+    index=X_train.index,
+    columns=encoder.get_feature_names_out(cols_to_encode)
+)
+X_test_enc = pd.DataFrame(
+    encoder.transform(X_test[cols_to_encode]),
+    index=X_test.index,
+    columns=encoder.get_feature_names_out(cols_to_encode)
+)
+
+# Drop original categorical columns and join encoded columns
+X_train2 = X_train.drop(cols_to_encode, axis=1).join(X_train_enc)
+X_test2 = X_test.drop(cols_to_encode, axis=1).join(X_test_enc)
+
+# (i) Scale numerical features
+scaler = RobustScaler()
+X_train2[numerical_cols] = scaler.fit_transform(X_train2[numerical_cols])
+X_test2[numerical_cols] = scaler.transform(X_test2[numerical_cols])
+
+# (j) Fit GaussianNB model
+model = GaussianNB()
+model.fit(X_train2, y_train)
+
+# (k) Predict on test data
+y_pred = model.predict(X_test2)
+
+# (l) Evaluate model
+acc = accuracy_score(y_test, y_pred)
+train_acc = model.score(X_train2, y_train)
+print("Train accuracy:", train_acc)
+print("Test accuracy:", acc)
+
+# (m) Null (baseline) accuracy
+null_acc = y_test.value_counts().max() / y_test.shape[0]
+print("Null (majority class) accuracy:", null_acc)
+print("Improvement over baseline:", acc - null_acc)
+
+# (n) Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion matrix:\n", cm)
+
+# (o) Classification report
+print("Classification report:\n", classification_report(y_test, y_pred))
+
+
+#2
+# Import libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+
+# Step 1: Load dataset
+df = pd.read_csv(r"C:\Users\prajw\Downloads\label.csv")   # CSV has 'text' and 'label' columns
+
+# Step 2: Split data
+X = df['text']
+y = df['label']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 3: Convert text to numbers (Bag of Words)
+cv = CountVectorizer()
+X_train_cv = cv.fit_transform(X_train)
+X_test_cv = cv.transform(X_test)
+
+# Step 4: Train model
+model = MultinomialNB()
+model.fit(X_train_cv, y_train)
+
+# Step 5: Predict
+y_pred = model.predict(X_test_cv)
+
+# Step 6: Check accuracy
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+
+
+#3
+# Naive Bayes Optimal Classifier Implementation
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Load dataset (Iris dataset as example)
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Create and train the model
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+# Predict on test data
+y_pred = model.predict(X_test)
+
+# Evaluate
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
