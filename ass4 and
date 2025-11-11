@@ -1,0 +1,265 @@
+#and
+import numpy as np
+def step(x):
+    return 1 if x >= 0 else 0
+def AND(x1, x2):
+    w1, w2, b = 1, 1, -1.5
+    return step(w1*x1 + w2*x2 + b)
+# Test
+for x1 in [0,1]:
+    for x2 in [0,1]:
+        print(f"Input: ({x1},{x2}) → Output: {AND(x1,x2)}")
+
+#or
+def OR(x1, x2):
+    w1, w2, b = 1, 1, -0.5
+    return step(w1*x1 + w2*x2 + b)
+for x1 in [0,1]:
+    for x2 in [0,1]:
+        print(f"Input: ({x1},{x2}) → Output: {OR(x1,x2)}")
+
+#NAnd
+def NAND(x1, x2):
+    w1, w2, b = -1, -1, 1.5
+    return step(w1*x1 + w2*x2 + b)
+
+for x1 in [0,1]:
+    for x2 in [0,1]:
+        print(f"Input: ({x1},{x2}) → Output: {NAND(x1,x2)}")
+
+#XOR
+def XOR(x1, x2):
+    # Hidden layer outputs
+    n1 = NAND(x1, x2)
+    n2 = OR(x1, x2)
+    # Final output using AND gate
+    return AND(n1, n2)
+for x1 in [0,1]:
+    for x2 in [0,1]:
+        print(f"Input: ({x1},{x2}) → Output: {XOR(x1,x2)}")
+
+#2
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.optimizers import Adam
+
+
+
+# Load dataset
+iris = load_iris()
+X = iris.data     # features (sepal length, sepal width, petal length, petal width)
+y = iris.target   # labels (0, 1, 2)
+
+# Split into training and test data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Normalize the feature data for better performance
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Convert labels to one-hot encoding
+y_train = to_categorical(y_train)
+y_test = to_categorical(y_test)
+
+
+
+model = Sequential([
+    Dense(8, input_dim=4, activation='relu'),  # 4 inputs → 8 neurons
+    Dense(6, activation='relu'),
+    Dense(3, activation='softmax')  # 3 outputs for 3 classes
+])
+
+# Compile model
+optimizer = Adam(learning_rate=0.01)
+model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
+
+
+history = model.fit(X_train, y_train, epochs=50, batch_size=8, validation_data=(X_test, y_test), verbose=1)
+
+
+
+loss, accuracy = model.evaluate(X_test, y_test)
+print(f"Test Accuracy: {accuracy * 100:.2f}%")
+
+
+
+# Try with a different architecture and learning rate
+model2 = Sequential([
+    Dense(10, input_dim=4, activation='relu'),
+    Dense(8, activation='relu'),
+    Dense(3, activation='softmax')
+])
+
+optimizer2 = Adam(learning_rate=0.005)
+model2.compile(optimizer=optimizer2, loss='categorical_crossentropy', metrics=['accuracy'])
+history2 = model2.fit(X_train, y_train, epochs=100, batch_size=8, validation_data=(X_test, y_test), verbose=1)
+
+
+
+import matplotlib.pyplot as plt
+
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Model Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()
+
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Model Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+
+
+#3
+# --------------------------------------------
+# Neural Network Classifier for Iris Dataset
+# --------------------------------------------
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelBinarizer
+
+# Load dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# One-hot encode output (3 classes)
+encoder = LabelBinarizer()
+y = encoder.fit_transform(y)
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Build Sequential model
+model = Sequential([
+    Dense(10, input_dim=4, activation='relu'),
+    Dense(8, activation='relu'),
+    Dense(3, activation='softmax')  # 3 output classes
+])
+
+# Compile model (you can change learning_rate for tuning)
+model.compile(optimizer=Adam(learning_rate=0.01),
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train model (you can change epochs for tuning)
+model.fit(X_train, y_train, epochs=50, batch_size=8, verbose=1)
+
+# Evaluate model
+loss, accuracy = model.evaluate(X_test, y_test)
+print("Accuracy:", round(accuracy*100, 2), "%")
+
+#4
+# --------------------------------------------
+# Neural Network Classifier for Heart Dataset
+# --------------------------------------------
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Load dataset (replace 'heart.csv' with your actual file)
+data = pd.read_csv("heart.csv")
+
+# Split features (X) and target (y)
+X = data.drop('target', axis=1)
+y = data['target']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale data
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Build Sequential model
+model = Sequential([
+    Dense(16, input_dim=X_train.shape[1], activation='relu'),
+    Dense(8, activation='relu'),
+    Dense(1, activation='sigmoid')
+])
+
+# Compile with different learning rate
+model.compile(optimizer=Adam(learning_rate=0.001),
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+# Train with different epochs
+model.fit(X_train, y_train, epochs=100, batch_size=8, verbose=1)
+
+# Evaluate model
+loss, accuracy = model.evaluate(X_test, y_test)
+print("Accuracy:", round(accuracy*100, 2), "%")
+
+#4
+# --------------------------------------------
+# Neural Network Classifier for Heart Dataset
+# --------------------------------------------
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Load dataset (replace 'heart.csv' with your actual file)
+data = pd.read_csv("heart.csv")
+
+# Split features (X) and target (y)
+X = data.drop('target', axis=1)
+y = data['target']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale data
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Build Sequential model
+model = Sequential([
+    Dense(16, input_dim=X_train.shape[1], activation='relu'),
+    Dense(8, activation='relu'),
+    Dense(1, activation='sigmoid')
+])
+
+# Compile with different learning rate
+model.compile(optimizer=Adam(learning_rate=0.001),
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+# Train with different epochs
+model.fit(X_train, y_train, epochs=100, batch_size=8, verbose=1)
+
+# Evaluate model
+loss, accuracy = model.evaluate(X_test, y_test)
+print("Accuracy:", round(accuracy*100, 2), "%")
+
+
+
+
